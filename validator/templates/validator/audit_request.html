@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Request Free Shipment Audit | Export Shipment Control</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --background: #141a29;
+            --foreground: #eef0f5;
+            --card: #1c2333;
+            --secondary: #232b3d;
+            --muted: #9aa2b5;
+            --primary: #d9b25f;
+            --primary-dark: #29230f;
+            --accent: #4fc0a1;
+            --border: rgba(255,255,255,0.09);
+            --border-strong: rgba(255,255,255,0.16);
+            --danger: #e78b8b;
+            --font-sans: 'Space Grotesk', system-ui, sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: var(--font-sans);
+
+            background: var(--background);
+            color: var(--foreground);
+
+            line-height: 1.5;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .blueprint {
+            background-image:
+                linear-gradient(
+                    to right,
+                    rgba(238,240,245,0.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    to bottom,
+                    rgba(238,240,245,0.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 44px 44px;
+        }
+
+        .container {
+            width: min(100% - 48px, 900px);
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+
+        header {
+            height: 64px;
+
+            border-bottom: 1px solid var(--border);
+
+            background: rgba(20,26,41,0.85);
+
+            backdrop-filter: blur(12px);
+        }
+
+        .header-inner {
+            height: 64px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 6px;
+
+            border: 1px solid rgba(217,178,95,0.4);
+
+            background: rgba(217,178,95,0.1);
+        }
+
+        .logo-mark span {
+            width: 10px;
+            height: 10px;
+
+            border-radius: 3px;
+
+            background: var(--primary);
+        }
+
+        .back-link {
+            font-family: var(--font-mono);
+
+            font-size: 12px;
+
+            color: var(--muted);
+        }
+
+        .back-link:hover {
+            color: var(--foreground);
+        }
+
+        /* MAIN */
+
+        main {
+            padding: 72px 0 96px;
+        }
+
+        .intro {
+            max-width: 720px;
+
+            margin-bottom: 40px;
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.16em;
+
+            color: var(--primary);
+        }
+
+        h1 {
+            margin-top: 16px;
+
+            font-size: clamp(2.25rem, 5vw, 3.4rem);
+
+            line-height: 1.05;
+
+            letter-spacing: -0.025em;
+
+            font-weight: 600;
+        }
+
+        .intro-text {
+            margin-top: 20px;
+
+            max-width: 650px;
+
+            font-size: 18px;
+
+            line-height: 1.65;
+
+            color: var(--muted);
+        }
+
+        /* TRUST STRIP */
+
+        .trust-strip {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 1px;
+
+            margin-bottom: 32px;
+
+            overflow: hidden;
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            background: var(--border);
+        }
+
+        .trust-item {
+            padding: 18px;
+
+            background: rgba(28,35,51,0.75);
+        }
+
+        .trust-number {
+            font-family: var(--font-mono);
+
+            font-size: 12px;
+
+            color: var(--primary);
+        }
+
+        .trust-title {
+            margin-top: 5px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+        .trust-text {
+            margin-top: 4px;
+
+            font-size: 12px;
+
+            color: var(--muted);
+        }
+
+        /* FORM CARD */
+
+        .form-card {
+            overflow: hidden;
+
+            border: 1px solid var(--border);
+
+            border-radius: 14px;
+
+            background: var(--card);
+
+            box-shadow:
+                0 25px 50px -12px rgba(0,0,0,0.45);
+        }
+
+        .form-header {
+            padding: 28px 32px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-header h2 {
+            font-size: 20px;
+
+            font-weight: 600;
+        }
+
+        .form-header p {
+            margin-top: 6px;
+
+            font-size: 14px;
+
+            color: var(--muted);
+        }
+
+        .form-body {
+            padding: 32px;
+        }
+
+        /* DJANGO FORM */
+
+        form p {
+            margin-bottom: 24px;
+        }
+
+        form label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        input[type="email"],
+        input[type="text"],
+        textarea {
+            width: 100%;
+
+            border: 1px solid var(--border-strong);
+
+            border-radius: 7px;
+
+            background: rgba(20,26,41,0.75);
+
+            color: var(--foreground);
+
+            padding: 13px 14px;
+
+            font-family: var(--font-sans);
+
+            font-size: 14px;
+
+            outline: none;
+
+            transition:
+                border-color .15s ease,
+                background .15s ease;
+        }
+
+        input[type="email"]:focus,
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: rgba(217,178,95,0.65);
+
+            background: rgba(20,26,41,0.95);
+        }
+
+        textarea {
+            resize: vertical;
+
+            min-height: 110px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px dashed var(--border-strong);
+
+            border-radius: 8px;
+
+            background: rgba(20,26,41,0.5);
+
+            color: var(--muted);
+
+            font-family: var(--font-sans);
+
+            font-size: 13px;
+        }
+
+        input[type="file"]::file-selector-button {
+            margin-right: 12px;
+
+            padding: 8px 12px;
+
+            border: 1px solid var(--border-strong);
+
+            border-radius: 6px;
+
+            background: var(--secondary);
+
+            color: var(--foreground);
+
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #2b354b;
+        }
+
+        .helptext {
+            display: block;
+
+            margin-top: 6px;
+
+            font-size: 11px;
+
+            color: var(--muted);
+        }
+
+        ul.errorlist {
+            margin-bottom: 8px;
+
+            padding: 0;
+
+            list-style: none;
+
+            font-size: 12px;
+
+            color: var(--danger);
+        }
+
+        /* DOCUMENT AREA */
+
+        .document-section {
+            margin: 32px 0;
+
+            padding: 24px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            background: rgba(35,43,61,0.35);
+        }
+
+        .document-heading {
+            margin-bottom: 20px;
+        }
+
+        .document-heading h3 {
+            font-size: 15px;
+
+            font-weight: 600;
+        }
+
+        .document-heading p {
+            margin-top: 5px;
+
+            font-size: 12px;
+
+            color: var(--muted);
+        }
+
+        /* PRIVACY */
+
+        .privacy {
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 8px;
+
+            padding: 16px;
+
+            border: 1px solid rgba(217,178,95,0.2);
+
+            border-radius: 8px;
+
+            background: rgba(217,178,95,0.05);
+        }
+
+        .privacy-icon {
+            flex: none;
+
+            width: 22px;
+            height: 22px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(217,178,95,0.12);
+
+            color: var(--primary);
+
+            font-family: var(--font-mono);
+
+            font-size: 11px;
+        }
+
+        .privacy strong {
+            display: block;
+
+            font-size: 13px;
+        }
+
+        .privacy p {
+            margin-top: 4px;
+
+            font-size: 12px;
+
+            color: var(--muted);
+        }
+
+        /* SUBMIT */
+
+        .submit-area {
+            margin-top: 28px;
+
+            padding-top: 28px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+
+            padding: 15px 20px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: var(--primary);
+
+            color: var(--primary-dark);
+
+            font-family: var(--font-sans);
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                transform .15s ease,
+                filter .15s ease;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+
+            filter: brightness(1.05);
+        }
+
+        .submit-note {
+            margin-top: 12px;
+
+            text-align: center;
+
+            font-family: var(--font-mono);
+
+            font-size: 11px;
+
+            color: var(--muted);
+        }
+
+        /* FOOTER */
+
+        footer {
+            border-top: 1px solid var(--border);
+
+            padding: 28px 0;
+
+            color: var(--muted);
+        }
+
+        footer p {
+            font-family: var(--font-mono);
+
+            font-size: 11px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 32px, 900px);
+            }
+
+            main {
+                padding: 48px 0 64px;
+            }
+
+            .trust-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .form-body {
+                padding: 24px;
+            }
+
+            .form-header {
+                padding: 24px;
+            }
+
+            .document-section {
+                padding: 18px;
+            }
+
+            .back-link {
+                display: none;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body class="blueprint">
+
+
+<header>
+
+    <div class="container header-inner">
+
+        <a
+            href="{% url 'home' %}"
+            class="logo"
+        >
+
+            <span class="logo-mark">
+                <span></span>
+            </span>
+
+            <span>
+                Export Shipment Control
+            </span>
+
+        </a>
+
+
+        <a
+            href="{% url 'home' %}"
+            class="back-link"
+        >
+            ← Back to home
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <div class="container">
+
+
+        <!-- INTRO -->
+
+        <div class="intro">
+
+            <p class="eyebrow">
+                Free manual review
+            </p>
+
+            <h1>
+                Let's check one shipment.
+            </h1>
+
+            <p class="intro-text">
+
+                Submit the key documents from one shipment and we'll
+                manually compare important fields for potential
+                discrepancies.
+
+            </p>
+
+        </div>
+
+
+        <!-- TRUST STRIP -->
+
+        <div class="trust-strip">
+
+            <div class="trust-item">
+
+                <div class="trust-number">
+                    01
+                </div>
+
+                <div class="trust-title">
+                    Submit
+                </div>
+
+                <div class="trust-text">
+                    Provide the shipment details and documents.
+                </div>
+
+            </div>
+
+
+            <div class="trust-item">
+
+                <div class="trust-number">
+                    02
+                </div>
+
+                <div class="trust-title">
+                    We compare
+                </div>
+
+                <div class="trust-text">
+                    We manually review overlapping shipment fields.
+                </div>
+
+            </div>
+
+
+            <div class="trust-item">
+
+                <div class="trust-number">
+                    03
+                </div>
+
+                <div class="trust-title">
+                    You get findings
+                </div>
+
+                <div class="trust-text">
+                    We record the discrepancies that need review.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <div class="form-card">
+
+
+            <div class="form-header">
+
+                <h2>
+                    Shipment audit request
+                </h2>
+
+                <p>
+                    Please provide the following information.
+                </p>
+
+            </div>
+
+
+            <div class="form-body">
+
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- CONTACT -->
+
+                    <div>
+
+                        {{ form.email.errors }}
+
+                        <label for="{{ form.email.id_for_label }}">
+                            Email address
+                        </label>
+
+                        {{ form.email }}
+
+                    </div>
+
+
+                    <br>
+
+
+                    <div>
+
+                        {{ form.shipment_reference.errors }}
+
+                        <label for="{{ form.shipment_reference.id_for_label }}">
+                            Shipment reference
+                        </label>
+
+                        {{ form.shipment_reference }}
+
+                    </div>
+
+
+                    <!-- DOCUMENTS -->
+
+                    <div class="document-section">
+
+                        <div class="document-heading">
+
+                            <h3>
+                                Shipment documents
+                            </h3>
+
+                            <p>
+                                Upload the three documents we need for
+                                the manual comparison.
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            {{ form.invoice_file.errors }}
+
+                            <label for="{{ form.invoice_file.id_for_label }}">
+                                Commercial Invoice
+                            </label>
+
+                            {{ form.invoice_file }}
+
+                        </div>
+
+
+                        <br>
+
+
+                        <div>
+
+                            {{ form.packing_list_file.errors }}
+
+                            <label for="{{ form.packing_list_file.id_for_label }}">
+                                Packing List
+                            </label>
+
+                            {{ form.packing_list_file }}
+
+                        </div>
+
+
+                        <br>
+
+
+                        <div>
+
+                            {{ form.bl_file.errors }}
+
+                            <label for="{{ form.bl_file.id_for_label }}">
+                                Draft Bill of Lading
+                            </label>
+
+                            {{ form.bl_file }}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- NOTES -->
+
+                    <div>
+
+                        {{ form.notes.errors }}
+
+                        <label for="{{ form.notes.id_for_label }}">
+                            Notes <span style="color: var(--muted); font-weight: 400;">(optional)</span>
+                        </label>
+
+                        {{ form.notes }}
+
+                    </div>
+
+
+                    <!-- PRIVACY -->
+
+                    <div class="privacy">
+
+                        <div class="privacy-icon">
+                            !
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Protect sensitive information
+                            </strong>
+
+                            <p>
+                                Please redact sensitive commercial,
+                                financial or personal information before
+                                uploading documents where possible.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SUBMIT -->
+
+                    <div class="submit-area">
+
+                        <button type="submit">
+                            Submit Free Audit Request
+                        </button>
+
+                        <p class="submit-note">
+                            Free manual review · No payment required
+                        </p>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            © 2026 Export Shipment Control — Early validation project.
+        </p>
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>

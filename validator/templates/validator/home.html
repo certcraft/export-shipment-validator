@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Export Shipment Control — Catch document discrepancies earlier</title>
+
+  <meta
+    name="description"
+    content="A structured workflow for checking shipment information across Commercial Invoice, Packing List and Draft Bill of Lading."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+
+    :root {
+      --background: #141a29;
+      --foreground: #eef0f5;
+      --card: #1c2333;
+      --primary: #d9b25f;
+      --primary-foreground: #29230f;
+      --secondary: #232b3d;
+      --muted-foreground: #9aa2b5;
+      --accent: #4fc0a1;
+      --border: rgba(255, 255, 255, 0.09);
+      --font-sans: 'Space Grotesk', system-ui, sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background: var(--background);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--background);
+      color: var(--foreground);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+    }
+
+    .bg-blueprint {
+      background-image:
+        linear-gradient(
+          to right,
+          rgba(238, 240, 245, 0.04) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(238, 240, 245, 0.04) 1px,
+          transparent 1px
+        );
+
+      background-size: 44px 44px;
+    }
+
+    /* ---------- Buttons ---------- */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 14px 24px;
+
+      border-radius: 8px;
+
+      font-size: 14px;
+      font-weight: 600;
+
+      cursor: pointer;
+
+      border: 1px solid transparent;
+
+      transition:
+        transform .15s ease,
+        background .15s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(35, 43, 61, 0.5);
+      border-color: var(--border);
+      color: var(--foreground);
+    }
+
+    .btn-secondary:hover {
+      background: var(--secondary);
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-weight: 500;
+    }
+
+    /* ---------- Header ---------- */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+
+      border-bottom: 1px solid var(--border);
+
+      background: rgba(20, 26, 41, 0.8);
+
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      display: flex;
+
+      height: 64px;
+
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      display: flex;
+
+      height: 28px;
+      width: 28px;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 6px;
+
+      border: 1px solid rgba(217, 178, 95, 0.4);
+
+      background: rgba(217, 178, 95, 0.1);
+    }
+
+    .logo-mark span {
+      height: 10px;
+      width: 10px;
+
+      border-radius: 3px;
+
+      background: var(--primary);
+    }
+
+    .logo-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav {
+      display: none;
+
+      align-items: center;
+
+      gap: 32px;
+    }
+
+    .nav a {
+      font-size: 14px;
+      color: var(--muted-foreground);
+
+      transition: color .15s;
+    }
+
+    .nav a:hover {
+      color: var(--foreground);
+    }
+
+    /* ---------- Hero ---------- */
+
+    .hero {
+      position: relative;
+
+      overflow: hidden;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-topline {
+      position: absolute;
+
+      left: 0;
+      right: 0;
+      top: 0;
+
+      height: 1px;
+
+      background:
+        linear-gradient(
+          to right,
+          transparent,
+          rgba(217, 178, 95, 0.5),
+          transparent
+        );
+    }
+
+    .hero-grid {
+      display: grid;
+
+      gap: 56px;
+
+      align-items: center;
+
+      padding: 80px 0;
+    }
+
+    .pill {
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      border-radius: 999px;
+
+      border: 1px solid var(--border);
+
+      background: rgba(35, 43, 61, 0.6);
+
+      padding: 4px 12px;
+
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      color: var(--muted-foreground);
+    }
+
+    .dot {
+      display: inline-block;
+
+      height: 6px;
+      width: 6px;
+
+      border-radius: 999px;
+    }
+
+    .dot-accent {
+      background: var(--accent);
+    }
+
+    h1 {
+      margin-top: 24px;
+
+      font-size: clamp(2rem, 4vw, 3.1rem);
+
+      font-weight: 600;
+
+      line-height: 1.05;
+
+      letter-spacing: -0.02em;
+    }
+
+    h1 .accent {
+      color: var(--primary);
+    }
+
+    .hero-lead {
+      margin-top: 24px;
+
+      max-width: 34rem;
+
+      font-size: 1.125rem;
+
+      line-height: 1.6;
+
+      color: var(--muted-foreground);
+    }
+
+    .hero-actions {
+      margin-top: 36px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+    .hero-note {
+      margin-top: 16px;
+
+      font-family: var(--font-mono);
+
+      font-size: 11px;
+
+      color: var(--muted-foreground);
+    }
+
+    /* ---------- Visual ---------- */
+
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-glow {
+      position: absolute;
+
+      inset: -16px;
+
+      z-index: -1;
+
+      border-radius: 16px;
+
+      background: rgba(217, 178, 95, 0.05);
+
+      filter: blur(40px);
+    }
+
+    .panel {
+      overflow: hidden;
+
+      border-radius: 12px;
+
+      border: 1px solid var(--border);
+
+      background: var(--card);
+
+      box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .panel-bar {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      border-bottom: 1px solid var(--border);
+
+      padding: 12px 16px;
+    }
+
+    .panel-bar-left {
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      color: var(--muted-foreground);
+    }
+
+    .badge {
+      border-radius: 999px;
+
+      border: 1px solid rgba(217, 178, 95, 0.4);
+
+      background: rgba(217, 178, 95, 0.1);
+
+      padding: 2px 10px;
+
+      font-family: var(--font-mono);
+
+      font-size: 11px;
+
+      color: var(--primary);
+    }
+
+    .panel-head,
+    .panel-row {
+      display: grid;
+
+      grid-template-columns:
+        1.1fr
+        1fr
+        1fr
+        1fr;
+
+      align-items: center;
+
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+    }
+
+    .panel-head {
+      border-bottom: 1px solid var(--border);
+
+      font-size: 10px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.08em;
+
+      color: var(--muted-foreground);
+    }
+
+    .panel-head > div,
+    .panel-row > div {
+      padding: 12px;
+    }
+
+    .panel-head > div:first-child,
+    .panel-row > div:first-child {
+      padding-left: 16px;
+    }
+
+    .panel-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .panel-row.mismatch {
+      background: rgba(217, 178, 95, 0.06);
+    }
+
+    .field-cell {
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+    }
+
+    .field-dot {
+      height: 6px;
+      width: 6px;
+
+      border-radius: 999px;
+    }
+
+    .field-dot.ok {
+      background: var(--accent);
+    }
+
+    .field-dot.flag {
+      background: var(--primary);
+    }
+
+    .cell-muted {
+      color: var(--muted-foreground);
+    }
+
+    .cell-ok {
+      color: var(--accent);
+
+      font-weight: 500;
+    }
+
+    .cell-flag {
+      color: var(--primary);
+
+      font-weight: 500;
+    }
+
+    .panel-foot {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      border-top: 1px solid var(--border);
+
+      background: rgba(35, 43, 61, 0.4);
+
+      padding: 12px 16px;
+
+      font-family: var(--font-mono);
+
+      font-size: 11px;
+    }
+
+    /* ---------- Sections ---------- */
+
+    section.block {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .block-inner {
+      padding: 80px 0;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.16em;
+
+      color: var(--primary);
+    }
+
+    h2 {
+      margin-top: 16px;
+
+      font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+
+      font-weight: 600;
+
+      letter-spacing: -0.02em;
+    }
+
+    .why-grid {
+      display: grid;
+
+      gap: 48px;
+    }
+
+    .why-body {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 24px;
+
+      font-size: 1.125rem;
+
+      line-height: 1.6;
+
+      color: var(--muted-foreground);
+    }
+
+    .why-body .emph {
+      color: var(--foreground);
+    }
+
+    /* ---------- Process ---------- */
+
+    .process {
+      background: rgba(35, 43, 61, 0.2);
+    }
+
+    .steps {
+      margin-top: 56px;
+
+      display: grid;
+
+      gap: 1px;
+
+      overflow: hidden;
+
+      border-radius: 12px;
+
+      border: 1px solid var(--border);
+
+      background: var(--border);
+    }
+
+    .step {
+      background: var(--card);
+
+      padding: 32px;
+    }
+
+    .step-num {
+      font-family: var(--font-mono);
+
+      font-size: 14px;
+
+      color: var(--primary);
+    }
+
+    .step h3 {
+      margin-top: 24px;
+
+      font-size: 1.25rem;
+
+      font-weight: 600;
+    }
+
+    .step p {
+      margin-top: 12px;
+
+      line-height: 1.6;
+
+      color: var(--muted-foreground);
+    }
+
+    /* ---------- Workbook ---------- */
+
+    .workbook-grid {
+      display: grid;
+
+      gap: 56px;
+
+      align-items: center;
+    }
+
+    .workbook-lead {
+      margin-top: 20px;
+
+      max-width: 32rem;
+
+      font-size: 1.125rem;
+
+      line-height: 1.6;
+
+      color: var(--muted-foreground);
+    }
+
+    .checklist {
+      margin-top: 32px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+    .checklist li {
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      font-size: 14px;
+    }
+
+    .check {
+      display: flex;
+
+      height: 20px;
+      width: 20px;
+
+      flex: none;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 999px;
+
+      border: 1px solid rgba(79, 192, 161, 0.4);
+
+      background: rgba(79, 192, 161, 0.1);
+
+      font-family: var(--font-mono);
+
+      font-size: 11px;
+
+      color: var(--accent);
+    }
+
+    .file-card {
+      position: relative;
+
+      border-radius: 12px;
+
+      border: 1px solid var(--border);
+
+      background: var(--card);
+
+      padding: 24px;
+
+      box-shadow:
+        0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+
+    .file-head {
+      margin-bottom: 20px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      border-bottom: 1px solid var(--border);
+
+      padding-bottom: 16px;
+
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      color: var(--muted-foreground);
+    }
+
+    .sheet {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      border-radius: 6px;
+
+      border: 1px solid var(--border);
+
+      background: rgba(35, 43, 61, 0.4);
+
+      padding: 12px 16px;
+
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      margin-bottom: 10px;
+    }
+
+    .sheet:last-child {
+      margin-bottom: 0;
+    }
+
+    .sheet .name {
+      color: var(--foreground);
+    }
+
+    .sheet .cells {
+      color: var(--muted-foreground);
+    }
+
+    /* ---------- Audit CTA ---------- */
+
+    .cta-card {
+      position: relative;
+
+      overflow: hidden;
+
+      border-radius: 16px;
+
+      border: 1px solid rgba(217, 178, 95, 0.25);
+
+      background: var(--card);
+
+      padding: 40px;
+    }
+
+    .cta-glow {
+      position: absolute;
+
+      right: -64px;
+      top: -64px;
+
+      height: 224px;
+      width: 224px;
+
+      border-radius: 999px;
+
+      background: rgba(217, 178, 95, 0.1);
+
+      filter: blur(48px);
+
+      pointer-events: none;
+    }
+
+    .cta-inner {
+      position: relative;
+
+      max-width: 40rem;
+    }
+
+    .cta-lead {
+      margin-top: 20px;
+
+      font-size: 1.125rem;
+
+      line-height: 1.6;
+
+      color: var(--muted-foreground);
+    }
+
+    .cta-actions {
+      margin-top: 36px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+    .cta-tip {
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      color: var(--muted-foreground);
+    }
+
+    /* ---------- Footer ---------- */
+
+    footer {
+      background: var(--background);
+    }
+
+    .footer-inner {
+      padding: 56px 0;
+    }
+
+    .footer-top {
+      display: flex;
+
+      flex-direction: column;
+
+      justify-content: space-between;
+
+      gap: 32px;
+    }
+
+    .footer-about {
+      max-width: 24rem;
+    }
+
+    .footer-about p {
+      margin-top: 16px;
+
+      font-size: 14px;
+
+      line-height: 1.6;
+
+      color: var(--muted-foreground);
+    }
+
+    .footer-col-title {
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.16em;
+
+      color: var(--muted-foreground);
+    }
+
+    .footer-col ul {
+      margin-top: 16px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 10px;
+
+      font-size: 14px;
+    }
+
+    .footer-col a {
+      color: rgba(238, 240, 245, 0.8);
+    }
+
+    .footer-col a:hover {
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      margin-top: 48px;
+
+      border-top: 1px solid var(--border);
+
+      padding-top: 24px;
+    }
+
+    .footer-bottom p {
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      color: var(--muted-foreground);
+    }
+
+    /* ---------- Responsive ---------- */
+
+    @media (min-width: 768px) {
+
+      .nav {
+        display: flex;
+      }
+
+      .hero-actions,
+      .cta-actions {
+        flex-direction: row;
+      }
+
+      .cta-actions {
+        align-items: center;
+      }
+
+      .why-grid {
+        grid-template-columns: 0.8fr 1fr;
+
+        gap: 80px;
+      }
+
+      .steps {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .workbook-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-top {
+        flex-direction: row;
+      }
+    }
+
+    @media (min-width: 1024px) {
+
+      .hero-grid {
+        grid-template-columns: 1.05fr 1fr;
+
+        padding: 112px 0;
+      }
+
+      .block-inner {
+        padding: 96px 0;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header>
+
+    <div class="container header-inner">
+
+      <a href="{% url 'home' %}" class="logo">
+
+        <span class="logo-mark">
+          <span></span>
+        </span>
+
+        <span class="logo-name">
+          Export Shipment Control
+        </span>
+
+      </a>
+
+      <nav class="nav">
+
+        <a href="#process">
+          How it works
+        </a>
+
+        <a href="#workbook">
+          The workbook
+        </a>
+
+        <a href="#audit">
+          Free audit
+        </a>
+
+      </nav>
+
+      <a
+        href="{% url 'download_workbook' %}"
+        class="btn btn-secondary btn-sm"
+      >
+        Get the workbook
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <main>
+
+    <!-- HERO -->
+
+    <section class="hero bg-blueprint">
+
+      <div class="hero-topline"></div>
+
+      <div class="container hero-grid">
+
+        <div>
+
+          <div class="pill">
+
+            <span class="dot dot-accent"></span>
+
+            For export documentation teams
+
+          </div>
+
+
+          <h1>
+
+            Catch shipment-document discrepancies
+
+            <span class="accent">
+              before they become downstream problems.
+            </span>
+
+          </h1>
+
+
+          <p class="hero-lead">
+
+            A structured workflow for cross-checking important shipment
+            information across your Commercial Invoice, Packing List and
+            Draft Bill of Lading.
+
+          </p>
+
+
+          <div class="hero-actions">
+
+            <a
+              href="{% url 'download_workbook' %}"
+              class="btn btn-primary"
+            >
+              Download free workbook
+            </a>
+
+            <a
+              href="{% url 'audit_request' %}"
+              class="btn btn-secondary"
+            >
+              Request a free shipment audit
+            </a>
+
+          </div>
+
+
+          <p class="hero-note">
+
+            Early validation project — built to test real export
+            documentation workflows.
+
+          </p>
+
+        </div>
+
+
+        <!-- VISUAL -->
+
+        <div class="hero-visual">
+
+          <div class="hero-glow"></div>
+
+          <div class="panel">
+
+            <div class="panel-bar">
+
+              <div class="panel-bar-left">
+
+                <span
+                  class="dot"
+                  style="background: rgba(217,178,95,0.7);"
+                ></span>
+
+                cross-check · sample shipment
+
+              </div>
+
+              <span class="badge">
+                Review required
+              </span>
+
+            </div>
+
+
+            <div class="panel-head">
+
+              <div>Field</div>
+              <div>Invoice</div>
+              <div>Packing</div>
+              <div>Draft B/L</div>
+
+            </div>
+
+
+            <div>
+
+              <div class="panel-row">
+
+                <div class="field-cell">
+
+                  <span class="field-dot ok"></span>
+
+                  Container No.
+
+                </div>
+
+                <div class="cell-muted">
+                  MSKU7841203
+                </div>
+
+                <div class="cell-muted">
+                  MSKU7841203
+                </div>
+
+                <div class="cell-ok">
+                  MSKU7841203
+                </div>
+
+              </div>
+
+
+              <div class="panel-row mismatch">
+
+                <div class="field-cell">
+
+                  <span class="field-dot flag"></span>
+
+                  Gross Weight
+
+                </div>
+
+                <div class="cell-muted">
+                  18,420 kg
+                </div>
+
+                <div class="cell-muted">
+                  18,420 kg
+                </div>
+
+                <div class="cell-flag">
+                  18,240 kg
+                </div>
+
+              </div>
+
+
+              <div class="panel-row">
+
+                <div class="field-cell">
+
+                  <span class="field-dot ok"></span>
+
+                  Carton Count
+
+                </div>
+
+                <div class="cell-muted">
+                  1,240
+                </div>
+
+                <div class="cell-muted">
+                  1,240
+                </div>
+
+                <div class="cell-ok">
+                  1,240
+                </div>
+
+              </div>
+
+
+              <div class="panel-row mismatch">
+
+                <div class="field-cell">
+
+                  <span class="field-dot flag"></span>
+
+                  Consignee
+
+                </div>
+
+                <div class="cell-muted">
+                  Meridian Trade Co.
+                </div>
+
+                <div class="cell-muted">
+                  Meridian Trade Co.
+                </div>
+
+                <div class="cell-flag">
+                  Meridian Trade
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="panel-foot">
+
+              <span class="cell-ok">
+                Fields matching
+              </span>
+
+              <span class="cell-flag">
+                Exceptions need review
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- WHY -->
+
+    <section class="block">
+
+      <div class="container block-inner">
+
+        <div class="why-grid">
+
+          <div>
+
+            <p class="eyebrow">
+              Why this exists
+            </p>
+
+            <h2>
+              The same shipment can appear slightly differently
+              across multiple documents.
+            </h2>
+
+          </div>
+
+
+          <div class="why-body">
+
+            <p>
+
+              Export shipments contain overlapping information across
+              multiple documents. When important fields differ between
+              documents, someone has to identify the discrepancy and
+              decide whether it needs correction.
+
+            </p>
+
+
+            <p class="emph">
+
+              Export Shipment Control is being developed around that
+              specific workflow: compare important fields, surface
+              exceptions and make follow-up easier.
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PROCESS -->
+
+    <section
+      id="process"
+      class="block process"
+    >
+
+      <div class="container block-inner">
+
+        <div style="max-width: 42rem;">
+
+          <p class="eyebrow">
+            The workflow
+          </p>
+
+          <h2>
+            From a stack of documents to a focused exception list.
+          </h2>
+
+        </div>
+
+
+        <ol class="steps">
+
+          <li class="step">
+
+            <span class="step-num">
+              01
+            </span>
+
+            <h3>
+              Compare
+            </h3>
+
+            <p>
+
+              Line up important shipment fields across the key
+              documents being reviewed.
+
+            </p>
+
+          </li>
+
+
+          <li class="step">
+
+            <span class="step-num">
+              02
+            </span>
+
+            <h3>
+              Find exceptions
+            </h3>
+
+            <p>
+
+              Identify information that does not match and needs
+              human review.
+
+            </p>
+
+          </li>
+
+
+          <li class="step">
+
+            <span class="step-num">
+              03
+            </span>
+
+            <h3>
+              Resolve
+            </h3>
+
+            <p>
+
+              Record the discrepancy and follow it through to
+              resolution.
+
+            </p>
+
+          </li>
+
+        </ol>
+
+      </div>
+
+    </section>
+
+
+    <!-- WORKBOOK -->
+
+    <section
+      id="workbook"
+      class="block"
+    >
+
+      <div class="container block-inner workbook-grid">
+
+        <div>
+
+          <p class="eyebrow">
+            Free resource
+          </p>
+
+          <h2>
+            The Export Shipment Control workbook.
+          </h2>
+
+
+          <p class="workbook-lead">
+
+            Start with a structured Excel workflow for shipment
+            tracking, document control, container information,
+            cross-document comparison and exception logging.
+
+          </p>
+
+
+          <ul class="checklist">
+
+            <li>
+
+              <span class="check">
+                ✓
+              </span>
+
+              <span>
+                Shipment and document control
+              </span>
+
+            </li>
+
+
+            <li>
+
+              <span class="check">
+                ✓
+              </span>
+
+              <span>
+                Container and cargo information
+              </span>
+
+            </li>
+
+
+            <li>
+
+              <span class="check">
+                ✓
+              </span>
+
+              <span>
+                Cross-document comparison
+              </span>
+
+            </li>
+
+
+            <li>
+
+              <span class="check">
+                ✓
+              </span>
+
+              <span>
+                Exception logging and follow-up
+              </span>
+
+            </li>
+
+          </ul>
+
+
+          <div
+  class="resource-actions"
+  style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px;"
+>
+  <a
+    href="{% url 'download_workbook' %}"
+    class="btn btn-primary"
+  >
+    Get the free workbook
+  </a>
+
+  <a
+    href="{% url 'download_guide' %}"
+    class="btn btn-secondary"
+  >
+    Download user guide
+  </a>
+</div>
+
+        </div>
+
+
+        <div class="file-card">
+
+          <div class="file-head">
+
+            <span>
+              export-shipment-control.xlsx
+            </span>
+
+            <span class="cell-ok">
+              Excel
+            </span>
+
+          </div>
+
+
+          <div class="sheet">
+
+            <span class="name">
+              Shipment Master
+            </span>
+
+            <span class="cells">
+              Control
+            </span>
+
+          </div>
+
+
+          <div class="sheet">
+
+            <span class="name">
+              Document Checklist
+            </span>
+
+            <span class="cells">
+              Status
+            </span>
+
+          </div>
+
+
+          <div class="sheet">
+
+            <span class="name">
+              Logistics Log
+            </span>
+
+            <span class="cells">
+              Shipment data
+            </span>
+
+          </div>
+
+
+          <div class="sheet">
+
+            <span class="name">
+              Manual Check
+            </span>
+
+            <span class="cells">
+              Cross-check
+            </span>
+
+          </div>
+
+
+          <div class="sheet">
+
+            <span class="name">
+              Exception Log
+            </span>
+
+            <span class="cells">
+              Follow-up
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- AUDIT -->
+
+    <section
+      id="audit"
+      class="block bg-blueprint"
+    >
+
+      <div class="container block-inner">
+
+        <div class="cta-card">
+
+          <div class="cta-glow"></div>
+
+
+          <div class="cta-inner">
+
+            <p class="eyebrow">
+              Free manual review
+            </p>
+
+
+            <h2>
+              Want us to check one of your shipments?
+            </h2>
+
+
+            <p class="cta-lead">
+
+              Submit one shipment's Commercial Invoice, Packing List
+              and Draft Bill of Lading. We'll perform a manual
+              discrepancy review and record what we find.
+
+            </p>
+
+
+            <div class="cta-actions">
+
+              <a
+                href="{% url 'audit_request' %}"
+                class="btn btn-primary"
+              >
+                Request free audit
+              </a>
+
+
+              <p class="cta-tip">
+
+                Please redact sensitive commercial information
+                before uploading.
+
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="container footer-inner">
+
+      <div class="footer-top">
+
+        <div class="footer-about">
+
+          <div class="logo">
+
+            <span class="logo-mark">
+              <span></span>
+            </span>
+
+            <span class="logo-name">
+              Export Shipment Control
+            </span>
+
+          </div>
+
+
+          <p>
+
+            An early validation project evaluating real-world
+            export documentation workflows and discrepancy-checking
+            needs.
+
+          </p>
+
+        </div>
+
+
+        <div class="footer-col">
+
+          <p class="footer-col-title">
+            Resources
+          </p>
+
+
+          <ul>
+
+            <li>
+              <a href="#workbook">
+                Free workbook
+              </a>
+            </li>
+
+            <li>
+              <a href="#audit">
+                Free audit
+              </a>
+            </li>
+
+            <li>
+              <a href="#process">
+                How it works
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+      </div>
+
+
+      <div class="footer-bottom">
+
+        <p>
+          © 2026 Export Shipment Control — Early validation project.
+        </p>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+</body>
+</html>

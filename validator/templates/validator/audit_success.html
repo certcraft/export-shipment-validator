@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Audit Request Received | Export Shipment Control</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --background: #141a29;
+            --foreground: #eef0f5;
+            --card: #1c2333;
+            --secondary: #232b3d;
+            --muted: #9aa2b5;
+            --primary: #d9b25f;
+            --primary-dark: #29230f;
+            --accent: #4fc0a1;
+            --border: rgba(255,255,255,0.09);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+
+            background: var(--background);
+            color: var(--foreground);
+
+            line-height: 1.5;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .blueprint {
+            background-image:
+                linear-gradient(
+                    to right,
+                    rgba(238,240,245,0.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    to bottom,
+                    rgba(238,240,245,0.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 44px 44px;
+        }
+
+        .container {
+            width: min(100% - 48px, 900px);
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+
+        header {
+            height: 64px;
+
+            border-bottom: 1px solid var(--border);
+
+            background: rgba(20,26,41,0.85);
+
+            backdrop-filter: blur(12px);
+        }
+
+        .header-inner {
+            height: 64px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 6px;
+
+            border: 1px solid rgba(217,178,95,0.4);
+
+            background: rgba(217,178,95,0.1);
+        }
+
+        .logo-mark span {
+            width: 10px;
+            height: 10px;
+
+            border-radius: 3px;
+
+            background: var(--primary);
+        }
+
+        .back-link {
+            font-family: 'IBM Plex Mono', monospace;
+
+            font-size: 12px;
+
+            color: var(--muted);
+        }
+
+        .back-link:hover {
+            color: var(--foreground);
+        }
+
+        /* MAIN */
+
+        main {
+            min-height: calc(100vh - 64px);
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 72px 0 96px;
+        }
+
+        .success-wrapper {
+            width: 100%;
+
+            max-width: 720px;
+
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.16em;
+
+            color: var(--accent);
+        }
+
+        /* SUCCESS CARD */
+
+        .success-card {
+            margin-top: 18px;
+
+            padding: 42px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 14px;
+
+            background: rgba(28,35,51,0.92);
+
+            box-shadow:
+                0 25px 50px -12px rgba(0,0,0,0.45);
+        }
+
+        .success-icon {
+            width: 52px;
+            height: 52px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(79,192,161,0.35);
+
+            background: rgba(79,192,161,0.10);
+
+            color: var(--accent);
+
+            font-size: 24px;
+
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: clamp(2.3rem, 5vw, 3.5rem);
+
+            line-height: 1.05;
+
+            letter-spacing: -0.025em;
+
+            font-weight: 600;
+        }
+
+        .lead {
+            margin-top: 18px;
+
+            max-width: 620px;
+
+            font-size: 17px;
+
+            line-height: 1.65;
+
+            color: var(--muted);
+        }
+
+        /* NEXT STEPS */
+
+        .next-steps {
+            margin-top: 34px;
+
+            padding-top: 28px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .next-steps h2 {
+            font-size: 16px;
+
+            font-weight: 600;
+        }
+
+        .steps {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 1px;
+
+            margin-top: 18px;
+
+            overflow: hidden;
+
+            border: 1px solid var(--border);
+
+            border-radius: 9px;
+
+            background: var(--border);
+        }
+
+        .step {
+            padding: 18px;
+
+            background: rgba(35,43,61,0.55);
+        }
+
+        .step-number {
+            font-family: 'IBM Plex Mono', monospace;
+
+            font-size: 11px;
+
+            color: var(--primary);
+        }
+
+        .step-title {
+            margin-top: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .step-text {
+            margin-top: 4px;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+            color: var(--muted);
+        }
+
+        /* PRIVACY */
+
+        .notice {
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 28px;
+
+            padding: 16px;
+
+            border: 1px solid rgba(217,178,95,0.18);
+
+            border-radius: 8px;
+
+            background: rgba(217,178,95,0.05);
+        }
+
+        .notice-icon {
+            flex: none;
+
+            width: 22px;
+            height: 22px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(217,178,95,0.12);
+
+            color: var(--primary);
+
+            font-family: 'IBM Plex Mono', monospace;
+
+            font-size: 11px;
+        }
+
+        .notice strong {
+            display: block;
+
+            font-size: 12px;
+        }
+
+        .notice p {
+            margin-top: 3px;
+
+            font-size: 11px;
+
+            color: var(--muted);
+        }
+
+        /* BUTTON */
+
+        .actions {
+            margin-top: 30px;
+        }
+
+        .home-button {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 12px 20px;
+
+            border-radius: 7px;
+
+            background: var(--primary);
+
+            color: var(--primary-dark);
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            transition:
+                transform .15s ease,
+                filter .15s ease;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+
+            filter: brightness(1.05);
+        }
+
+        /* FOOTER */
+
+        footer {
+            padding: 28px 0;
+
+            border-top: 1px solid var(--border);
+
+            color: var(--muted);
+        }
+
+        footer p {
+            font-family: 'IBM Plex Mono', monospace;
+
+            font-size: 11px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 32px, 900px);
+            }
+
+            main {
+                padding: 48px 0 64px;
+            }
+
+            .success-card {
+                padding: 28px 22px;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .back-link {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body class="blueprint">
+
+
+<header>
+
+    <div class="container header-inner">
+
+        <a href="{% url 'home' %}" class="logo">
+
+            <span class="logo-mark">
+                <span></span>
+            </span>
+
+            <span>
+                Export Shipment Control
+            </span>
+
+        </a>
+
+
+        <a href="{% url 'home' %}" class="back-link">
+            ← Back to home
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <div class="container">
+
+        <div class="success-wrapper">
+
+            <p class="eyebrow">
+                Request received
+            </p>
+
+
+            <div class="success-card">
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+
+                <h1>
+                    Audit request received.
+                </h1>
+
+
+                <p class="lead">
+                    Thanks. Your shipment audit request has been
+                    received successfully. We'll review the submitted
+                    documents for common cross-document discrepancies.
+                </p>
+
+
+                <div class="next-steps">
+
+                    <h2>
+                        What happens next
+                    </h2>
+
+
+                    <div class="steps">
+
+                        <div class="step">
+
+                            <div class="step-number">
+                                01
+                            </div>
+
+                            <div class="step-title">
+                                Review
+                            </div>
+
+                            <div class="step-text">
+                                We review the documents you submitted.
+                            </div>
+
+                        </div>
+
+
+                        <div class="step">
+
+                            <div class="step-number">
+                                02
+                            </div>
+
+                            <div class="step-title">
+                                Compare
+                            </div>
+
+                            <div class="step-text">
+                                We compare important overlapping
+                                shipment fields.
+                            </div>
+
+                        </div>
+
+
+                        <div class="step">
+
+                            <div class="step-number">
+                                03
+                            </div>
+
+                            <div class="step-title">
+                                Findings
+                            </div>
+
+                            <div class="step-text">
+                                We identify discrepancies that may
+                                need review.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="notice">
+
+                    <div class="notice-icon">
+                        !
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Protect sensitive information
+                        </strong>
+
+                        <p>
+                            Please do not send additional sensitive
+                            shipment documents unless requested.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <a
+                        href="{% url 'home' %}"
+                        class="home-button"
+                    >
+                        ← Back to Home
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            © 2026 Export Shipment Control — Early validation project.
+        </p>
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>

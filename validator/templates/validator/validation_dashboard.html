@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0d10;
+            color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 50px 24px;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .eyebrow {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #15181d;
+            border: 1px solid #292d33;
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .card-label {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card-value {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .section {
+            background: #15181d;
+            border: 1px solid #292d33;
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 22px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #292d33;
+        }
+
+        .status-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-name {
+            color: #d1d5db;
+        }
+
+        .status-count {
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 30px;
+            color: #d1d5db;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 700px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="eyebrow">Export Shipment Control</div>
+
+        <h1>Validation Dashboard</h1>
+
+        <p class="subtitle">
+            Internal view of workbook usage, leads, and audit requests.
+        </p>
+    </div>
+
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-label">Workbook Downloads</div>
+            <div class="card-value">{{ download_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Download Leads</div>
+            <div class="card-value">{{ lead_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Audit Requests</div>
+            <div class="card-value">{{ audit_count }}</div>
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <h2>Audit Request Status</h2>
+
+        <div class="status-row">
+            <span class="status-name">New</span>
+            <span class="status-count">{{ new_audits }}</span>
+        </div>
+
+        <div class="status-row">
+            <span class="status-name">Processing</span>
+            <span class="status-count">{{ processing_audits }}</span>
+        </div>
+
+        <div class="status-row">
+            <span class="status-name">Completed</span>
+            <span class="status-count">{{ completed_audits }}</span>
+        </div>
+
+    </div>
+
+
+    <a href="/" class="back">← Back to website</a>
+
+</div>
+
+</body>
+</html>
