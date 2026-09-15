@@ -950,7 +950,267 @@
         padding: 96px 0;
       }
     }
+/* ---------- Mobile Responsiveness Fix ---------- */
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Prevent grid/flex children from forcing page width */
+.hero-grid > *,
+.why-grid > *,
+.workbook-grid > *,
+.cta-inner,
+.panel,
+.file-card,
+.footer-about,
+.footer-col {
+  min-width: 0;
+}
+
+/* Allow long operational text to wrap */
+h1,
+h2,
+h3,
+p,
+span,
+a {
+  overflow-wrap: break-word;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 767px) {
+
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* =========================
+     HEADER
+     ========================= */
+
+  .header-inner {
+    height: 60px;
+    gap: 12px;
+  }
+
+  .logo {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .logo-mark {
+    flex: none;
+  }
+
+  .logo-name {
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  .header-inner > .btn {
+    flex: none;
+    padding: 8px 11px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  /* =========================
+     HERO
+     ========================= */
+
+  .hero-grid {
+    gap: 40px;
+    padding: 56px 0;
+  }
+
+  h1 {
+    width: 100%;
+    max-width: 100%;
+    font-size: clamp(2rem, 9vw, 2.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+
+  .hero-lead {
+    max-width: 100%;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .hero-actions {
+    width: 100%;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .hero-note {
+    max-width: 100%;
+    line-height: 1.5;
+  }
+
+  /* =========================
+     COMPARISON PANEL
+     ========================= */
+
+  .hero-visual {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .panel-head,
+  .panel-row {
+    min-width: 520px;
+  }
+
+  .panel-bar,
+  .panel-foot {
+    min-width: 520px;
+  }
+
+  .panel-bar {
+    gap: 16px;
+  }
+
+  .panel-bar-left {
+    white-space: nowrap;
+  }
+
+  /* =========================
+     SECTIONS
+     ========================= */
+
+  .block-inner {
+    padding: 64px 0;
+  }
+
+  .why-body,
+  .workbook-lead,
+  .cta-lead {
+    font-size: 1rem;
+  }
+
+  /* =========================
+     PROCESS CARDS
+     ========================= */
+
+  .step {
+    padding: 28px 24px;
+  }
+
+  /* =========================
+     WORKBOOK
+     ========================= */
+
+  .file-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  .file-head {
+    gap: 12px;
+  }
+
+  .file-head > span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .sheet {
+    gap: 12px;
+  }
+
+  .sheet .name,
+  .sheet .cells {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .resource-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .resource-actions .btn {
+    width: 100%;
+  }
+
+  /* =========================
+     AUDIT CTA
+     ========================= */
+
+  .cta-card {
+    padding: 28px 20px;
+  }
+
+  .cta-actions {
+    width: 100%;
+  }
+
+  .cta-actions .btn {
+    width: 100%;
+  }
+
+  .cta-tip {
+    line-height: 1.5;
+  }
+
+  /* =========================
+     FOOTER
+     ========================= */
+
+  .footer-inner {
+    padding: 48px 0;
+  }
+
+  .footer-top {
+    gap: 36px;
+  }
+
+  .footer-about {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .footer-col {
+    width: 100%;
+  }
+
+  .footer-col ul {
+    margin-top: 14px;
+  }
+
+  .footer-bottom {
+    margin-top: 40px;
+  }
+
+  .footer-bottom p {
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+}
   </style>
 </head>
 
